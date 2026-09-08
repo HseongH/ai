@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ai
+  ai:
+    ollama:
+      chat:
+        model: gemma3:4b

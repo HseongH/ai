@@ -2,7 +2,6 @@ package com.hseongh.ai.chat;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -13,9 +12,6 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public String chat(String userInput) {
-        return chatClient.prompt()
-                .user(userInput)
-                .call()
-                .content();
+        return chatClient.prompt().user(userInput).call().content();
     }
 }

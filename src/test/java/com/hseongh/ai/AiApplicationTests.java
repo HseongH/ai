@@ -1,4 +1,4 @@
-package com.hsh.ai;
+package com.hseongh.ai;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

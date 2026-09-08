@@ -14,6 +14,6 @@ public class ChatController {
 
     @GetMapping("/chat")
     public String chat(@RequestParam String userInput) {
-        return chatService.chat(userInput).toString();
+        return chatService.chat(userInput);
     }
 }

@@ -1,9 +1,9 @@
 package com.hseongh.ai.chat;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequiredArgsConstructor
@@ -11,8 +11,13 @@ public class ChatController {
 
   private final ChatService chatService;
 
-  @PostMapping("/chat")
-  public String chat(@RequestBody ChatRequest chatRequest) {
-    return chatService.chat(chatRequest.message());
+  @GetMapping("/chat")
+  public String chat(@RequestParam String message) {
+    return chatService.chat(message);
+  }
+
+  @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+  public Flux<String> streamChat(@RequestParam String message) {
+    return chatService.stream(message);
   }
 }

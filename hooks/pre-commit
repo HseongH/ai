@@ -1,0 +1,6 @@
+#!/bin/sh
+FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.java$')
+[ -z "$FILES" ] && exit 0
+
+./gradlew spotlessApply -q || exit 1
+echo "$FILES" | xargs -r git add

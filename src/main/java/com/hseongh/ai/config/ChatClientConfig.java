@@ -2,6 +2,7 @@ package com.hseongh.ai.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.client.advisor.ToolCallingAdvisor;
 import org.springframework.ai.chat.client.advisor.observation.AdvisorObservationConvention;
 import org.springframework.ai.chat.client.observation.ChatClientObservationConvention;
@@ -47,6 +48,11 @@ public class ChatClientConfig {
             chatClientObservationConvention.getIfUnique(),
             advisorObservationConvention.getIfUnique(),
             toolCallingAdvisorBuilder.getIfAvailable());
-    return configurer.configure(builder).build();
+    return configurer
+        .configure(
+            builder
+                .defaultAdvisors(new SimpleLoggerAdvisor())
+                .defaultSystem("Please answer in Korean."))
+        .build();
   }
 }

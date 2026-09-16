@@ -1,4 +1,3 @@
 package com.hseongh.ai.chat;
 
-public record ChatRequest(String message) {
-}
+public record ChatRequest(String message) {}

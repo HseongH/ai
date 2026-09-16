@@ -21,15 +21,16 @@ checkstyle {
 
 spotless {
     java {
-        targetExclude("build/**", "**/generated/**")
+        target("src/**/*.java")
+        targetExclude("**/generated/**")
 
-        googleJavaFormat("1.28.0")
+        googleJavaFormat("1.30.0")
 
-        removeUnusedImports()
+        tableTestFormatter()
         formatAnnotations()
     }
     kotlinGradle {
-        target("*.gradle.kts")
+        target("**/*.gradle.kts")
         ktlint()
     }
 }
@@ -43,11 +44,14 @@ extra["springAiVersion"] = "2.0.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.springframework.ai:spring-ai-starter-model-ollama")
+
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.1.1")
 
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -62,10 +66,16 @@ dependencyManagement {
     }
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.compilerArgs.add("-parameters")
+}
+
 tasks.withType<Checkstyle>().configureEach {
-    javaLauncher = javaToolchains.launcherFor {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
+    javaLauncher =
+        javaToolchains.launcherFor {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
 }
 
 tasks.withType<Test>().configureEach {
@@ -73,11 +83,12 @@ tasks.withType<Test>().configureEach {
 }
 
 tasks.register<Copy>("installGitHooks") {
-    description = "Copies the git hooks from hooks/ to .git/hooks"
+    description = "Install Git hooks"
+
     onlyIf { file("${rootProject.projectDir}/.git/hooks").isDirectory }
+
     from(layout.projectDirectory.dir("hooks"))
     into(layout.projectDirectory.dir(".git/hooks"))
+
     filePermissions { unix("0755") }
 }
-
-tasks.named("build") { dependsOn("installGitHooks") }

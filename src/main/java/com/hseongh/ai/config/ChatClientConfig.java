@@ -1,5 +1,6 @@
 package com.hseongh.ai.config;
 
+import com.hseongh.ai.advisor.ReReadingAdvisor;
 import io.micrometer.observation.ObservationRegistry;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -41,17 +42,18 @@ public class ChatClientConfig {
       ObjectProvider<ChatClientObservationConvention> chatClientObservationConvention,
       ObjectProvider<AdvisorObservationConvention> advisorObservationConvention,
       ObjectProvider<ToolCallingAdvisor.Builder<?>> toolCallingAdvisorBuilder) {
-    ChatClient.Builder builder =
+    var chatClient =
         ChatClient.builder(
             chatModel,
             observationRegistry.getIfUnique(() -> ObservationRegistry.NOOP),
             chatClientObservationConvention.getIfUnique(),
             advisorObservationConvention.getIfUnique(),
             toolCallingAdvisorBuilder.getIfAvailable());
+
     return configurer
         .configure(
-            builder
-                .defaultAdvisors(new SimpleLoggerAdvisor())
+            chatClient
+                .defaultAdvisors(new SimpleLoggerAdvisor(), new ReReadingAdvisor())
                 .defaultSystem("Please answer in Korean."))
         .build();
   }
